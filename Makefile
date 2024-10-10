@@ -1,56 +1,57 @@
-# Makefile
+# makefile for scheduling program
+#
+# make rr - for round-robin scheduling
+# make fcfs - for FCFS scheduling
+# make sjf - for SJF scheduling
+# make priority - for priority scheduling
+# make priority_rr - for priority with round robin scheduling
+
 CC = gcc
 CFLAGS = -Wall -g
 
-# Default rule to build all schedulers
-all: fcfs sjf rr priority priority_rr
+clean:
+	rm -rf *.o
+	rm -rf fcfs
+	rm -rf sjf
+	rm -rf rr
+	rm -rf priority
+	rm -rf priority_rr
 
-# FCFS scheduler
-fcfs: driver.o schedulers.o list.o schedule_fcfs.o
-	$(CC) $(CFLAGS) -DFCFS -o fcfs driver.o schedulers.o list.o schedule_fcfs.o
+fcfs: driver.o schedulers.o list.o cpu.o schedule_fcfs.o
+	$(CC) $(CFLAGS) -DFCFS -o fcfs driver.o schedulers.o schedule_fcfs.o list.o cpu.o
 
-# SJF scheduler
-sjf: driver.o schedulers.o list.o schedule_sjf.o
-	$(CC) $(CFLAGS) -DSJF -o sjf driver.o schedulers.o list.o schedule_sjf.o
+rr: driver.o schedulers.o list.o cpu.o schedule_rr.o
+	$(CC) $(CFLAGS) -o rr driver.o schedulers.o schedule_rr.o list.o cpu.o 
 
-# Round Robin scheduler
-rr: driver.o schedulers.o list.o schedule_rr.o
-	$(CC) $(CFLAGS) -DRR -o rr driver.o schedulers.o list.o schedule_rr.o
+sjf: driver.o schedulers.o list.o cpu.o schedule_sjf.o
+	$(CC) $(CFLAGS) -o sjf driver.o schedulers.o schedule_sjf.o list.o cpu.o
 
-# Priority scheduler
-priority: driver.o schedulers.o list.o schedule_priority.o
-	$(CC) $(CFLAGS) -DPRIORITY -o priority driver.o schedulers.o list.o schedule_priority.o
+priority: driver.o schedulers.o list.o cpu.o schedule_priority.o
+	$(CC) $(CFLAGS) -o priority driver.o schedulers.o schedule_priority.o list.o cpu.o
 
-# Priority with Round Robin scheduler
-priority_rr: driver.o schedulers.o list.o schedule_priority_rr.o
-	$(CC) $(CFLAGS) -DPRIORITY_RR -o priority_rr driver.o schedulers.o list.o schedule_priority_rr.o
+schedule_fcfs.o: schedule_fcfs.c
+	$(CC) $(CFLAGS) -c schedule_fcfs.c
 
-# Object files for driver and list
+priority_rr: driver.o list.o cpu.o schedule_priority_rr.o
+	$(CC) $(CFLAGS) -o priority_rr driver.o schedule_priority_rr.o list.o cpu.o
+
 driver.o: driver.c
 	$(CC) $(CFLAGS) -c driver.c
 
 schedulers.o: schedulers.c
 	$(CC) $(CFLAGS) -c schedulers.c
 
-list.o: list.c
-	$(CC) $(CFLAGS) -c list.c
-
-# Object files for each scheduling algorithm
-schedule_fcfs.o: schedule_fcfs.c
-	$(CC) $(CFLAGS) -c schedule_fcfs.c
-
 schedule_sjf.o: schedule_sjf.c
 	$(CC) $(CFLAGS) -c schedule_sjf.c
-
-schedule_rr.o: schedule_rr.c
-	$(CC) $(CFLAGS) -c schedule_rr.c
 
 schedule_priority.o: schedule_priority.c
 	$(CC) $(CFLAGS) -c schedule_priority.c
 
-schedule_priority_rr.o: schedule_priority_rr.c
-	$(CC) $(CFLAGS) -c schedule_priority_rr.c
+schedule_rr.o: schedule_rr.c
+	$(CC) $(CFLAGS) -c schedule_rr.c
 
-# Clean the build files
-clean:
-	rm -f *.o fcfs sjf rr priority priority_rr
+list.o: list.c list.h
+	$(CC) $(CFLAGS) -c list.c
+
+cpu.o: cpu.c cpu.h
+	$(CC) $(CFLAGS) -c cpu.c

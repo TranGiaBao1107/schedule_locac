@@ -1,15 +1,19 @@
-#ifndef SCHEDULER_H
-#define SCHEDULER_H
+#ifndef SCHEDULERS_H
+#define SCHEDULERS_H
 
-#include "task.h"
 #include "list.h"
-// add task
+
+#define MIN_PRIORITY 1
+#define MAX_PRIORITY 10
+
+// add a task to the list 
 void add(char *name, int priority, int burst, struct node **taskList);
-// define schedules
+
+// invoke the scheduler
 void schedule_fcfs(struct node *taskList);
-void schedule_sjf(struct node *taskList);
-void schedule_rr(struct node *taskList, int quantum);
-void schedule_priority(struct node *taskList);
-void schedule_priority_rr(struct node *taskList, int quantum);
+// void schedule_sjf();
+// void schedule_priority();
+// void schedule_rr();
+// void schedule_pri_rr();
 
 #endif
